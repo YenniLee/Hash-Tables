@@ -7,6 +7,7 @@ class LinkedPair:
         self.value = value
         self.next = None
 
+
 class HashTable:
     '''
     A hash table that with `capacity` buckets
@@ -54,7 +55,16 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # store index of given key with _hash_mod()
+        index = self._hash_mod(key)
+        
+        if self.storage[index] != None:
+            print(f'ERROR: collision at index: [{index}]')
+        # insert into hash table
+        self.storage[index] = value
+
+        
+        
 
 
 
@@ -66,7 +76,13 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        
+        if self.storage[index] == None:
+            print("ERROR: Key is not found")
+            return 
+        # if there is something at the index, set to None
+        self.storage[index] = None
 
 
     def retrieve(self, key):
@@ -77,7 +93,11 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+
+        if self.storage[index] == None:
+            return None
+        return self.storage[index]
 
 
     def resize(self):
@@ -87,7 +107,14 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        self.capacity = self.capacity * 2
+        self.storage = [None] * self.capacity
+
+        for item in self.storage:
+            current = item
+            while current:
+                self.insert(current.key, current.value)
+                current = current.next
 
 
 
