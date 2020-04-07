@@ -6,6 +6,8 @@ class LinkedPair:
         self.key = key
         self.value = value
         self.next = None
+    def _repr_(self):
+        return f"<{self.key}, {self.value}>"
 
 
 class HashTable:
@@ -55,18 +57,30 @@ class HashTable:
 
         Fill this in.
         '''
-        # store index of given key with _hash_mod()
+        # # store index of given key with _hash_mod()
+        # index = self._hash_mod(key)
+        
+        # if self.storage[index] != None:
+        #     print(f'ERROR: collision at index: [{index}]')
+        # # insert into hash table
+        # self.storage[index] = value
+
+        #**********************Day 2****************
         index = self._hash_mod(key)
+        # create linkedpair node using key/value
+        new_node = LinkedPair(key, value)
+        current_node = self.storage[index]
+        # if no link at index
+        if current_node == None:
+            # set to new node
+            self.storage[index] = new_node
+        else:
+            # set new node with key/value
+           new_node.next = self.storage[index]
+           # set index to new node
+           self.storage[index] = new_node
+                    
         
-        if self.storage[index] != None:
-            print(f'ERROR: collision at index: [{index}]')
-        # insert into hash table
-        self.storage[index] = value
-
-        
-        
-
-
 
     def remove(self, key):
         '''
@@ -78,11 +92,12 @@ class HashTable:
         '''
         index = self._hash_mod(key)
         
-        if self.storage[index] == None:
-            print("ERROR: Key is not found")
-            return 
-        # if there is something at the index, set to None
-        self.storage[index] = None
+        if self.storage[index] != None:
+            self.storage[index] = None
+        else:
+            # print("ERROR: Key not found")
+            return None
+
 
 
     def retrieve(self, key):
@@ -94,10 +109,15 @@ class HashTable:
         Fill this in.
         '''
         index = self._hash_mod(key)
-
         if self.storage[index] == None:
             return None
-        return self.storage[index]
+        else:
+            current_node = self.storage[index]
+            while current_node:
+                if current_node.key == key:
+                    return current_node.value
+                current_node = current_node.next
+
 
 
     def resize(self):
@@ -107,15 +127,16 @@ class HashTable:
 
         Fill this in.
         '''
+        old_storage = self.storage.copy()
         self.capacity = self.capacity * 2
         self.storage = [None] * self.capacity
 
-        for item in self.storage:
+        for item in old_storage:
             current = item
             while current:
                 self.insert(current.key, current.value)
                 current = current.next
-
+              
 
 
 if __name__ == "__main__":
@@ -145,3 +166,4 @@ if __name__ == "__main__":
     print(ht.retrieve("line_3"))
 
     print("")
+    print(ht.storage)
